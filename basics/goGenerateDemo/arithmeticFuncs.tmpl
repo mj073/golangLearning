@@ -1,0 +1,8 @@
+{{/* -*- mode: Go -*- */}}
+package main
+
+{{if eq .Operation "+"}}
+func Add(x,y {{.Type}}) {{.Type}}{
+    return x+y
+}
+{{end}}
