@@ -1,0 +1,58 @@
+<component name="libraryTable">
+  <library name="GOPATH &lt;GoBasics&gt;">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../aleflibs" />
+      <root url="file://$PROJECT_DIR$/../github.com" />
+      <root url="file://$PROJECT_DIR$/../kubernetes" />
+      <root url="file://$PROJECT_DIR$/../authserver_bitbucket_repo" />
+      <root url="file://$PROJECT_DIR$/../ipdr_2" />
+      <root url="file://$PROJECT_DIR$/../go-opencv" />
+      <root url="file://$PROJECT_DIR$/../google.golang.org" />
+      <root url="file://$PROJECT_DIR$/../go-datastructures-master" />
+      <root url="file://$PROJECT_DIR$/../authserver" />
+      <root url="file://$PROJECT_DIR$/../ipdr_bitbucket_repo" />
+      <root url="file://$PROJECT_DIR$/../orc" />
+      <root url="file://$PROJECT_DIR$/../ipdr" />
+      <root url="file://$PROJECT_DIR$/../orc_bitbucket_repo" />
+      <root url="file://$PROJECT_DIR$/../cdnv2" />
+      <root url="file://$PROJECT_DIR$/../appmeter" />
+      <root url="file://$PROJECT_DIR$/../GolangTraining-master" />
+      <root url="file://$PROJECT_DIR$/../SimpleREST-application" />
+      <root url="file://$PROJECT_DIR$/../multiFileUploader" />
+      <root url="file://$PROJECT_DIR$/../golang.org" />
+      <root url="file://$PROJECT_DIR$/../cdnv2_bitbucket_repo" />
+      <root url="file://$PROJECT_DIR$/../open_source_projects" />
+      <root url="file://$PROJECT_DIR$/../docker" />
+      <root url="file://$PROJECT_DIR$/../gods-master" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../aleflibs" />
+      <root url="file://$PROJECT_DIR$/../github.com" />
+      <root url="file://$PROJECT_DIR$/../kubernetes" />
+      <root url="file://$PROJECT_DIR$/../authserver_bitbucket_repo" />
+      <root url="file://$PROJECT_DIR$/../ipdr_2" />
+      <root url="file://$PROJECT_DIR$/../go-opencv" />
+      <root url="file://$PROJECT_DIR$/../google.golang.org" />
+      <root url="file://$PROJECT_DIR$/../go-datastructures-master" />
+      <root url="file://$PROJECT_DIR$/../authserver" />
+      <root url="file://$PROJECT_DIR$/../ipdr_bitbucket_repo" />
+      <root url="file://$PROJECT_DIR$/../orc" />
+      <root url="file://$PROJECT_DIR$/../ipdr" />
+      <root url="file://$PROJECT_DIR$/../orc_bitbucket_repo" />
+      <root url="file://$PROJECT_DIR$/../cdnv2" />
+      <root url="file://$PROJECT_DIR$/../appmeter" />
+      <root url="file://$PROJECT_DIR$/../GolangTraining-master" />
+      <root url="file://$PROJECT_DIR$/../SimpleREST-application" />
+      <root url="file://$PROJECT_DIR$/../multiFileUploader" />
+      <root url="file://$PROJECT_DIR$/../golang.org" />
+      <root url="file://$PROJECT_DIR$/../cdnv2_bitbucket_repo" />
+      <root url="file://$PROJECT_DIR$/../open_source_projects" />
+      <root url="file://$PROJECT_DIR$/../docker" />
+      <root url="file://$PROJECT_DIR$/../gods-master" />
+    </SOURCES>
+    <excluded>
+      <root url="file://$PROJECT_DIR$" />
+    </excluded>
+  </library>
+</component>
