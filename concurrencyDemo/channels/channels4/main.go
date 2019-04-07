@@ -1,14 +1,23 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func main() {
 	ch := make(chan int)
 	go func() {
-		ch <- 2
+		for {
+			_, ok := <-ch
+			if !ok {
+				fmt.Println("receive on closed chann")
+				break
+			}
+			fmt.Println("received")
+		}
 	}()
-	v, ok := <- ch
-	if ok {
-		fmt.Println("v:",v)
-	}
+	ch <- 5
+	close(ch)
+	time.Sleep(1 * time.Second)
 }

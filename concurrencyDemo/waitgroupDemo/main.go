@@ -11,14 +11,24 @@ func main() {
 	var urls = []string{
 		"http://www.golang.org/",
 		"https://www.google.com/",
-		"http://www.somestupidname.com/",
+		"http://www.somestupidname1.com/",
+		"https://www.facebook.com",
+		"https://www.github.com",
 	}
-	respChan := make(chan string,1)
+	respChan := make(chan string)
 	go func (){
+		wg.Add(1)
+		defer wg.Done()
+		responseCounter := 0
+	loop:
 		for {
 			select {
 			case x := <- respChan :
+				responseCounter++
 				fmt.Println(x)
+				if responseCounter == len(urls) {
+					break loop
+				}
 			}
 		}
 	}()
@@ -31,10 +41,14 @@ func main() {
 			// Decrement the counter when the goroutine completes.
 			defer wg.Done()
 			// Fetch the URL.
-			resp, _ := http.Get(url)
-			//if err == nil && resp != nil{
-				respChan <- fmt.Sprintln(url,":",resp.Status)
-			//}
+			resp, err := http.Get(url)
+			if err != nil {
+				respChan <- fmt.Sprintln(url, ":", err)
+			}else {
+				//if err == nil && resp != nil{
+				respChan <- fmt.Sprintln(url, ":", resp.Status)
+				//}
+			}
 		}(url)
 	}
 	// Wait for all HTTP fetches to complete.

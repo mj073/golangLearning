@@ -9,11 +9,7 @@ func main() {
 	ch := make(chan int)
 	go func() {
 		for {
-			_, ok := <-ch
-			if !ok {
-				fmt.Println("receive on closed chann")
-				break
-			}
+			<- ch
 			fmt.Println("received")
 		}
 	}()
