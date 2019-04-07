@@ -1,11 +1,11 @@
 package main
 
 import (
-	"net"
 	"fmt"
-	"os"
-	"net/rpc"
 	"github.com/golangLearning/bankApp/common"
+	"net"
+	"net/rpc"
+	"os"
 )
 
 func main(){
@@ -14,7 +14,12 @@ func main(){
 		fmt.Errorf("%s","failed to listen on unix socket..ERROR:",err)
 		os.Exit(1)
 	}
+	common.RegisterAllGob()
 	bankTransact := common.NewBankTransaction()
-	rpc.Register(bankTransact)
-	go rpc.Accept(listener)
+	err = rpc.Register(bankTransact)
+	if err != nil {
+		fmt.Errorf("%s:%v","failed to register rpc object..error",err)
+		os.Exit(1)
+	}
+	rpc.Accept(listener)
 }

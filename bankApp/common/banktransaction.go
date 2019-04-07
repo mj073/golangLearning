@@ -1,60 +1,16 @@
 package common
 
 import (
-	"sync"
-	"crypto/sha1"
-	"encoding/base64"
 	"fmt"
+	"sync"
 )
 
-type TransactionType uint8
-const (
-	CreateAccount TransactionType = iota
-	Deposit
-	Withdrawl
-	CheckBalance
-	CustomerDetails
-)
-type Balance int
-func (b Balance) String() string{
-	return fmt.Sprint(b)
-}
-type CustomerDB struct {
-	CustomerInfo map[string]CustomerDetails
-	CustomerKey map[uint]string
-	BalanceByKey map[string]Balance
-}
-func (c *CustomerDB) isNewCustomer(d CustomerDetails) (string, bool) {
-	key := generateKey([]byte(fmt.Sprint(d.Name," ",d.Age," ",d.Pan)))
-	if _, ok := c.CustomerInfo[key]; !ok {
-		return key,true
-	}
-	return "",false
-}
-func generateKey(b []byte) string{
-	hasher := sha1.New()
-	hasher.Write(b)
-	return base64.URLEncoding.EncodeToString(hasher.Sum(nil))
-}
 type BankTransaction struct {
 	CustomerDB *CustomerDB
 	CustomerCount uint
 	Mu *sync.RWMutex
 }
 
-type CustomerDetails struct {
-	CustomerId uint
-	Name	string
-	Age 	uint8
-	Pan	string
-}
-type DepositWithdrawDetails struct {
-	CustomerId uint
-	Amount	uint
-}
-type CustomerDetailsRequest struct {
-	CustomerId uint
-}
 type TransactionRequest struct {
 	Type TransactionType
 	Details interface{}
@@ -65,33 +21,27 @@ type TransactionResponse struct {
 	Ack bool
 }
 func (resp TransactionResponse) String() string{
-	message := fmt.Sprint("Transaction")
-	if resp.Ack{
-		message += fmt.Sprintln(" Successful")
-		switch r := resp.Response.(type) {
-		case CreateAccountResponse:
-			message += fmt.Sprint("Your customerId is:",r.customerId)
-		case DepositResponse:
-			message += fmt.Sprint("")
-		case WithdrawResponse:
-			message += fmt.Sprintf("Amount %d withdrawn",r.Amount)
-		case CheckBalanceResponse:
-			message += fmt.Sprintf("Your Current Balance: %s",r.Balance)
-		case CustomerDetailsResponse:
+	message := fmt.Sprintln("Transaction Successful")
 
+	switch r := resp.Response.(type) {
+	case CreateAccountResponse:
+		message += fmt.Sprint("Your customerId is:",r.CustomerId)
+	case DepositResponse:
+		message += fmt.Sprint("")
+	case WithdrawResponse:
+		message += fmt.Sprintf("Amount %d withdrawn",r.Amount)
+	case CheckBalanceResponse:
+		message += fmt.Sprintf("Balance: %s",r.Balance)
+	case CustomerDetailsResponse:
+		message += fmt.Sprintf("Customer Details:\n")
+		for _, c := range r.Details {
+			message += fmt.Sprint(c)
 		}
-	}else {
-		message += fmt.Sprintln(" Failed")
+	case ErrorResponse:
+		message = fmt.Sprintln("Transaction Failed")
+		message += "ERROR:"+r.Msg
 	}
-	return
-}
-type CreateAccountResponse struct { customerId uint}
-type DepositResponse struct {}
-type WithdrawResponse struct { Amount uint }
-type CheckBalanceResponse struct { Balance Balance }
-type ErrorResponse struct {}
-type CustomerDetailsResponse struct {
-
+	return message
 }
 
 func NewBankTransaction() *BankTransaction{
@@ -105,21 +55,20 @@ func NewBankTransaction() *BankTransaction{
 	}
 }
 
-func (b *BankTransaction) Transact(req *TransactionRequest, resp *TransactionResponse) error{
+func (b *BankTransaction) Transact(req *TransactionRequest, resp *TransactionResponse) (err error){
 	b.Mu.Lock()
 	defer b.Mu.Unlock()
 
 	switch req.Type {
 	case CreateAccount:
 		r := CreateAccountResponse{}
+		resp.Ack = true
 		c, ok := req.Details.(CustomerDetails)
 		if !ok {
 			resp.Ack = false
-			resp.Response = ErrorResponse{}
-			return fmt.Errorf("%s","failed to typecast request details")
+			resp.Response = ErrorResponse{ Msg: fmt.Sprintf("%s","failed to typecast request details")}
+			return
 		}
-
-		fmt.Println("CreateAccount for:",)
 		if key, ok := b.CustomerDB.isNewCustomer(c); ok {
 			b.CustomerCount++
 			c.CustomerId = b.CustomerCount
@@ -127,23 +76,78 @@ func (b *BankTransaction) Transact(req *TransactionRequest, resp *TransactionRes
 			b.CustomerDB.CustomerInfo[key] = c
 			b.CustomerDB.BalanceByKey[key] = 0
 
-			resp.Ack = true
-			r.customerId = c.CustomerId
+			r.CustomerId = c.CustomerId
 		}else {
 			resp.Ack = false
+			resp.Response = ErrorResponse{ Msg: fmt.Sprintf("%s","customer already exists") }
+			return
 		}
 		resp.Response = r
-	case CustomerDetails:
+	case CustomerInfo:
 		r := CustomerDetailsResponse{}
-		req.Details.(CustomerDetailsRequest)
+		resp.Ack = true
+		c, ok := req.Details.(CustomerDetailsRequest)
+		if !ok {
+			resp.Ack = false
+			resp.Response = ErrorResponse{ Msg: fmt.Sprintf("%s","failed to typecast request details")}
+			return
+		}
+		if c.CustomerId == 0{
+			for _,v := range b.CustomerDB.CustomerInfo {
+				r.Details = append(r.Details, v)
+			}
+		}else if info, ok := b.CustomerDB.isCustomerExist(c.CustomerId); ok{
+			r.Details = append(r.Details,info)
+		}else {
+			resp.Ack = false
+			resp.Response = ErrorResponse{ Msg: fmt.Sprintf("%s","customer does not exists") }
+			return
+		}
+		resp.Response = r
+
 	case Deposit:
 		d := DepositResponse{}
+		resp.Ack = true
+		r := req.Details.(DepositWithdrawDetails)
+		if  key, ok := b.CustomerDB.getKey(r.CustomerId); ok{
+			currBal, _ := b.CustomerDB.BalanceByKey[key]
+			b.CustomerDB.BalanceByKey[key] = Balance(int(currBal) + r.Amount)
+		}else {
+			resp.Ack = false
+			resp.Response = ErrorResponse{ Msg: fmt.Sprintf("%s","customer does not exists") }
+			return
+		}
 		resp.Response = d
 	case Withdrawl:
 		w := WithdrawResponse{}
+		resp.Ack = true
+		r := req.Details.(DepositWithdrawDetails)
+		if  key, ok := b.CustomerDB.getKey(r.CustomerId); ok{
+			currBal, _ := b.CustomerDB.BalanceByKey[key]
+			if int(currBal) < r.Amount {
+				resp.Ack = false
+				resp.Response = ErrorResponse{ Msg: fmt.Sprintf("%s","insuffient balance")}
+				return
+			}
+			b.CustomerDB.BalanceByKey[key] = Balance(int(currBal) - r.Amount)
+		}else {
+			resp.Ack = false
+			resp.Response = ErrorResponse{ Msg: fmt.Sprintf("%s","customer does not exists") }
+			return
+		}
+		w.Amount = r.Amount
 		resp.Response = w
 	case CheckBalance:
 		c := CheckBalanceResponse{}
+		resp.Ack = true
+		d := req.Details.(CheckBalanceRequest)
+		if  key, ok := b.CustomerDB.getKey(d.CustomerId); ok{
+			c.Balance, _ = b.CustomerDB.BalanceByKey[key]
+		}else {
+			resp.Ack = false
+			resp.Response = ErrorResponse{ Msg: fmt.Sprintf("%s","customer does not exists") }
+			return
+		}
 		resp.Response = c
 	default:
 
