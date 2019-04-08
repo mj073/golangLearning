@@ -58,6 +58,11 @@ func NewBankTransaction() *BankTransaction{
 func (b *BankTransaction) Transact(req *TransactionRequest, resp *TransactionResponse) (err error){
 	b.Mu.Lock()
 	defer b.Mu.Unlock()
+	/*defer func(){
+		if r := recover(); r != nil{
+			fmt.Println("recovered from panic..")
+		}
+	}()*/
 
 	switch req.Type {
 	case CreateAccount:
@@ -149,6 +154,7 @@ func (b *BankTransaction) Transact(req *TransactionRequest, resp *TransactionRes
 			return
 		}
 		resp.Response = c
+		//panic("forceful panic")
 	default:
 
 	}

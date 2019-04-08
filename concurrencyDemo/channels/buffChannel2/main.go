@@ -16,7 +16,6 @@ func main(){
 func readFromChannel(busyChan chan int) {
 	for i:=0; i<100; i++{
 		fmt.Println("reading from busyChan:",<-busyChan)
-		//time.Sleep(time.Microsecond * 10)
 	}
 
 	done <- true
@@ -24,9 +23,8 @@ func readFromChannel(busyChan chan int) {
 }
 func writeToChannel(busyChan chan int) {
 	for i:=0; i<100; i++{
-		fmt.Println("writing to busyChan:",i)
 		busyChan <- i
-		//time.Sleep(time.Microsecond * 10)
+		fmt.Println("wrote,",i,"to busyChan:")
 	}
 	done <- true
 	fmt.Println("done writing")

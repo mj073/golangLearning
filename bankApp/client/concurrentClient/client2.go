@@ -24,9 +24,10 @@ var (
 	nResponse int
 )
 func createTransactionRequest() []common.TransactionRequest{
+	dataFile := "/home/mahesh/Downloads/MOCK_DATA.json"
 	tr := []common.TransactionRequest{}
 	details := []common.CustomerDetails{}
-	b, err := ioutil.ReadFile("/home/mahesh/Downloads/MOCK_DATA.json")
+	b, err := ioutil.ReadFile(dataFile)
 	if err != nil {
 		fmt.Println("failed to read file...ERROR:",err)
 		os.Exit(1)
@@ -38,8 +39,6 @@ func createTransactionRequest() []common.TransactionRequest{
 	}
 	for _, d := range details {
 		tr = append(tr, common.TransactionRequest{Type: common.CreateAccount, Details: d})
-		/*tr[i].Type = common.CreateAccount
-		tr[i].Details = d*/
 	}
 	return tr
 }
@@ -51,7 +50,7 @@ func (c *TransactionClient) Do() {
 		conn, err = net.Dial("unix","@"+"bankServer")
 		if err != nil{
 			if i != MAXRETRY {
-				time.Sleep(100 *time.Millisecond)
+				time.Sleep(10 *time.Millisecond)
 				continue
 			}else {
 				fmt.Println("failed to dial unix socket...ERROR:", err)
@@ -90,6 +89,9 @@ func waitForAllResponses(done chan bool) {
 			if nRequests == nResponse {
 				done <- true
 			}
+		case <- time.After(5 * time.Second):
+			fmt.Println("timeout..")
+			done <- false
 		}
 	}
 }
