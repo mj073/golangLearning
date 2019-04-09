@@ -30,7 +30,7 @@ func main() {
 
 	// This starts up 3 workers, initially blocked
 	// because there are no jobs yet.
-	for w := 1; w <= 10; w++ {
+	for w := 1; w <= 20; w++ {
 		go worker(w, jobs, results)
 	}
 
