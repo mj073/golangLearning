@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 )
+var logError = errors.New("new error")
 
 func main() {
 	fmt.Println("in main")

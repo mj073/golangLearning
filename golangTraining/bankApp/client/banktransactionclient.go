@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/golangLearning/bankApp/common"
+	"github.com/golangLearning/golangTraining/bankApp/common"
 	"net"
 	"net/rpc"
 	"os"

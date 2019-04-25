@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/golangLearning/rpcDemo/rpcobject"
+	"github.com/golangLearning/golangTraining/rpcDemo/rpcobject"
 	"log"
 	"net"
 	"net/http"
@@ -19,7 +19,7 @@ func main() {
 	c := rpcobject.NewRPCCache()
 	rpc.Register(c)
 
-	l, err := net.Listen("tcp", "192.168.1.105:2000")
+	l, err := net.Listen("tcp", "localhost:2000")
 	if err != nil {
 		fmt.Println("failed to listen on localhost:2000..>ERROR:", err)
 		os.Exit(1)

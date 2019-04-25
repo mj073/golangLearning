@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/golangLearning/bankApp/common"
+	"github.com/golangLearning/golangTraining/bankApp/common"
 	"io/ioutil"
 	"net"
 	"net/rpc"

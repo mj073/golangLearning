@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/golangLearning/bankApp/common"
+	"github.com/golangLearning/golangTraining/bankApp/common"
 	"math/rand"
 	"net"
 	"net/rpc"

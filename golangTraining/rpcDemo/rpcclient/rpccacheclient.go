@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/golangLearning/rpcDemo/rpcobject"
+	"github.com/golangLearning/golangTraining/rpcDemo/rpcobject"
 	"net"
 	"net/rpc"
 	"os"
 )
 
 func main() {
-	conn, err := net.Dial("tcp", "192.168.1.105:2000")
+	conn, err := net.Dial("tcp", "localhost:2000")
 	if err != nil {
 		fmt.Println("failed to dial localhost:2000...ERROR:", err)
 		os.Exit(1)
