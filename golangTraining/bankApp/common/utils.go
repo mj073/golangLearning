@@ -6,6 +6,14 @@ import (
 	"encoding/gob"
 )
 
+const (
+	/*
+	ProtoType = "unix"
+	Address = "@bankServer"
+	*/
+	ProtoType = "tcp"
+	Address = ":6666"
+)
 func generateKey(b []byte) string{
 	hasher := sha1.New()
 	hasher.Write(b)

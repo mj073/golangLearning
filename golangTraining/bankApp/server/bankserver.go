@@ -9,7 +9,7 @@ import (
 )
 
 func main(){
-	listener, err := net.Listen("unix","@"+"bankServer")
+	listener, err := net.Listen(common.ProtoType, common.Address)
 	if err != nil {
 		fmt.Errorf("%s","failed to listen on unix socket..ERROR:",err)
 		os.Exit(1)

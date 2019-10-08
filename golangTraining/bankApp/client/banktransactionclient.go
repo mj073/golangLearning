@@ -17,7 +17,7 @@ var (
 
 )
 func main(){
-	conn, err := net.Dial("unix","@"+"bankServer")
+	conn, err := net.Dial(common.ProtoType, common.Address)
 	if err != nil{
 		fmt.Println("failed to dial unix socket...ERROR:",err)
 		os.Exit(1)

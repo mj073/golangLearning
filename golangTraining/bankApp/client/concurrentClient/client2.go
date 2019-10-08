@@ -24,7 +24,7 @@ var (
 	nResponse int
 )
 func createTransactionRequest() []common.TransactionRequest{
-	dataFile := "/home/mahesh/Downloads/MOCK_DATA.json"
+	dataFile := "D:\\golang\\src\\github.com\\golangLearning\\golangTraining\\bankApp\\client\\concurrentClient\\MOCK_DATA.json"
 	tr := []common.TransactionRequest{}
 	details := []common.CustomerDetails{}
 	b, err := ioutil.ReadFile(dataFile)
@@ -47,7 +47,7 @@ func (c *TransactionClient) Do() {
 	var conn net.Conn
 	var err error
 	for i:=0; i<MAXRETRY; i++ {
-		conn, err = net.Dial("unix","@"+"bankServer")
+		conn, err = net.Dial(common.ProtoType, common.Address)
 		if err != nil{
 			if i != MAXRETRY {
 				time.Sleep(10 *time.Millisecond)
@@ -85,7 +85,7 @@ func waitForAllResponses(done chan bool) {
 		select {
 		case r := <- responseChan:
 			nResponse++
-			fmt.Printf("response from client %d:\n%v\n",r.Id,r.Response)
+			fmt.Printf("response from client %d:%v\n",r.Id,r.Response)
 			if nRequests == nResponse {
 				done <- true
 			}
