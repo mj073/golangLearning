@@ -9,8 +9,9 @@ func main() {
 	ch := make(chan int)
 	go func() {
 		for {
-			<- ch
-			fmt.Println("received")
+			// resource leak
+			fmt.Println(<- ch)
+			fmt.Println("task")
 		}
 	}()
 	ch <- 5

@@ -9,10 +9,11 @@ func main(){
 	fmt.Println("in main")
 	defer fmt.Println("defer statement in main")
 	defer func() {
+		//defer fmt.Println("defer in defer")
 		panic("defered panic")
 	}()
 	go panicRoutine2()
-	panic("forceful panic")
+	//panic("forceful panic")
 	fmt.Println("sleeping for 1 sec")
 	time.Sleep(1 * time.Second)
 	fmt.Println("exiting main")

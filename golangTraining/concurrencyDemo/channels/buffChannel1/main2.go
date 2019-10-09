@@ -5,6 +5,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 )
 
 var count = 0
@@ -15,8 +16,10 @@ func main() {
 	fmt.Println("Hello World")
 	go processTask(taskChan)
 	for task := 0; task < 5; task++ {
+		fmt.Println("sending task",task)
 		taskChan <- task
 	}
+	fmt.Print("other tasks")
 	<-done
 }
 
@@ -26,6 +29,7 @@ func processTask(task chan int) {
 	}
 }
 func executeTask(task int) {
+	time.Sleep(5 * time.Second)
 	fmt.Println("Executing task:", task)
 	count++
 	if count == 5 {
