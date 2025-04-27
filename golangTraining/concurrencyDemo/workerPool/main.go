@@ -21,7 +21,7 @@ func worker(id int, jobs <-chan int, results chan<- int) {
 }
 
 func main() {
-
+	//runtime.GOMAXPROCS(1)
 	// In order to use our pool of workers we need to send
 	// them work and collect their results. We make 2
 	// channels for this.

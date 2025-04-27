@@ -19,7 +19,10 @@ func main() {
 		fmt.Println("sending task",task)
 		taskChan <- task
 	}
-	fmt.Print("other tasks")
+	for task := 0; task < 5; task++ {
+		fmt.Println("Main task:", task)
+		time.Sleep(time.Millisecond * 100)
+	}
 	<-done
 }
 
